@@ -1,197 +1,70 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>代码效果查看器</title>
-  <style>
-    body {
-      background-color: #e4e4e4;
-      font-family: 'Courier New', Courier, monospace;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    /* Container for desktop view */
-    .desktop {
-      background-color: #2c3e50;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Taskbar style */
-    .taskbar {
-      background-color: #34495e;
-      color: white;
-      height: 40px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      padding: 0 20px;
-    }
-
-    .taskbar .start-btn {
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .taskbar .open-windows {
-      display: flex;
-      gap: 10px;
-      margin-left: 20px;
-    }
-
-    .taskbar .open-windows .window-btn {
-      cursor: pointer;
-      padding: 5px 10px;
-      background-color: #2980b9;
-      color: white;
-      border-radius: 5px;
-      font-size: 14px;
-    }
-
-    /* Window style */
-    .window {
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      width: 80%;
-      height: 80%;
-      margin: 20px auto;
-      position: relative;
-      display: none;
-      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Title bar for window */
-    .window .title-bar {
-      background-color: #3498db;
-      color: white;
-      padding: 10px;
-      font-size: 18px;
-      text-align: center;
-      cursor: move;
-    }
-
-    /* Code Editor Area */
-    .window .code-editor {
-      padding: 20px;
-      height: calc(100% - 40px);
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    /* Textarea for the code editor */
-    .window .code-editor textarea {
-      width: 100%;
-      height: 200px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 14px;
-      background-color: #f5f5f5;
-      resize: none;
-    }
-
-    /* Button to run the code */
-    .window .code-editor button {
-      padding: 10px;
-      background-color: #2980b9;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    /* Button hover effect */
-    .window .code-editor button:hover {
-      background-color: #1f78b9;
-    }
-
-    /* Output window for the code result */
-    .window .output {
-      padding: 15px;
-      background-color: #2c3e50;
-      color: white;
-      height: 200px;
-      border-radius: 8px;
-      overflow-y: auto;
-    }
-
-    .window .output iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-  </style>
-</head>
-<body>
-
-  <div class="desktop">
-    <!-- Taskbar -->
-    <div class="taskbar">
-      <div class="start-btn" onclick="toggleStartMenu()">开始</div>
-      <div class="open-windows">
-        <div class="window-btn" onclick="openCodeEditor()">打开代码编辑器</div>
+<template>
+  <div class="faq-page max-w-4xl mx-auto p-6">
+    <h1 class="text-4xl font-bold text-center mb-8">LOONOOL 常见问题</h1>
+    
+    <div class="space-y-6">
+      <div v-for="(item, index) in faqList" :key="index">
+        <div 
+          class="faq-question cursor-pointer p-4 bg-gray-100 rounded-lg shadow-sm" 
+          @click="toggleAnswer(index)"
+        >
+          <h2 class="text-xl font-semibold">{{ item.question }}</h2>
+        </div>
+        
+        <div 
+          v-show="item.isOpen" 
+          class="faq-answer mt-4 p-4 bg-gray-50 rounded-lg shadow-inner"
+        >
+          <p class="text-base">{{ item.answer }}</p>
+        </div>
       </div>
     </div>
-
-    <!-- Code Editor Window -->
-    <div class="window" id="codeEditorWindow">
-      <div class="title-bar">代码编辑器</div>
-      <div class="code-editor">
-        <textarea id="htmlCode" placeholder="输入 HTML 代码"></textarea>
-        <textarea id="cssCode" placeholder="输入 CSS 代码"></textarea>
-        <textarea id="jsCode" placeholder="输入 JavaScript 代码"></textarea>
-        <button onclick="runCode()">运行代码</button>
-      </div>
-      <div class="output">
-        <iframe id="outputFrame"></iframe>
-      </div>
-    </div>
-
   </div>
+</template>
 
-  <script>
-    function toggleStartMenu() {
-      alert("开始菜单按钮被点击！");
-    }
+<script setup>
+import { ref } from 'vue';
 
-    function openCodeEditor() {
-      const editorWindow = document.getElementById('codeEditorWindow');
-      editorWindow.style.display = 'block';
-    }
+const faqList = ref([
+  {
+    question: 'LOONOOL 是什么？',
+    answer: 'LOONOOL 是一款帮助你判断图片是否适合商用（Safe-to-Use）的工具。你上传一张图片，我们会自动分析视觉、文案和基础行业规则，并生成一份清晰易懂的可用性报告。',
+    isOpen: false
+  },
+  {
+    question: 'LOONOOL 和普通相似度工具有什么不同？',
+    answer: '大多数相似度工具只告诉你“这张图和别人像不像”。LOONOOL 的关注点不是“像”，而是：“这张图是否适合商用？有没有可能造成视觉混淆或误解？”',
+    isOpen: false
+  },
+  {
+    question: 'LOONOOL 适合谁使用？',
+    answer: '任何想要“稳一点再用图”的人都能用到 LOONOOL，特别是品牌设计、运营、电商和市场团队。',
+    isOpen: false
+  },
+  {
+    question: 'Safe-to-Use 报告里面有什么？',
+    answer: 'Safe-to-Use 报告是图片可用性体检，包含视觉稳定性分析、潜在混淆点提示、独特性分析等，旨在评估图片是否适合商用。',
+    isOpen: false
+  },
+  {
+    question: 'LOONOOL 会保存我的图片吗？',
+    answer: 'LOONOOL 不会长期保存您的图片。原图仅用于分析，最多保留 72 小时，之后自动删除。',
+    isOpen: false
+  },
+  // Add more FAQ items as needed
+]);
 
-    function runCode() {
-      const htmlCode = document.getElementById('htmlCode').value;
-      const cssCode = document.getElementById('cssCode').value;
-      const jsCode = document.getElementById('jsCode').value;
+const toggleAnswer = (index) => {
+  faqList.value[index].isOpen = !faqList.value[index].isOpen;
+};
+</script>
 
-      const outputFrame = document.getElementById('outputFrame');
-      const document = outputFrame.contentDocument || outputFrame.contentWindow.document;
+<style scoped>
+.faq-question {
+  transition: background-color 0.3s ease;
+}
 
-      document.open();
-      document.write(`
-        <html>
-          <head>
-            <style>${cssCode}</style>
-          </head>
-          <body>
-            ${htmlCode}
-            <script>${jsCode}</script>
-          </body>
-        </html>
-      `);
-      document.close();
-    }
-  </script>
-
-</body>
-</html>
+.faq-question:hover {
+  background-color: #f1f1f1;
+}
+</style>
