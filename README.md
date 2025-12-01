@@ -1,68 +1,197 @@
-1. LOONOOL 是什么？
-LOONOOL 是一款帮助你判断图片是否适合商用（Safe-to-Use）的工具。
- 你上传一张图片，我们会自动分析视觉、文案和基础行业规则，并生成一份清晰易懂的可用性报告。
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>代码效果查看器</title>
+  <style>
+    body {
+      background-color: #e4e4e4;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-2. LOONOOL 和普通相似度工具有什么不同？
-大多数相似度工具只告诉你“这张图和别人像不像”。
- LOONOOL 的关注点不是“像”，而是：
-这张图是否适合商用？有没有可能造成视觉混淆或误解？
-我们会从可用性的角度分析图片：
-	•	是否存在让人看不清、误读、误解的视觉结构
-	•	是否有容易和常见图形混淆的关键元素
-	•	图形的稳定度、辨识度是否足够
-	•	哪些部分可能在应用场景中出现问题
-简单来说： 相似度工具告诉你像不像；  LOONOOL 告诉你“能不能用、哪里要注意、怎么改更稳”。
+    /* Container for desktop view */
+    .desktop {
+      background-color: #2c3e50;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
 
-3. LOONOOL 适合谁使用？
-	•	正在做品牌图形 / Logo 的设计团队
-	•	需要频繁制作产品图、电商图的运营团队
-	•	想降低视觉“撞脸”概率的品牌方
-	•	需要判断图片能否用于广告或包装的市场部门
-任何想要“稳一点再用图”的人，都用得到 LOONOOL。
+    /* Taskbar style */
+    .taskbar {
+      background-color: #34495e;
+      color: white;
+      height: 40px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 20px;
+    }
 
-4. Safe-to-Use 报告里面有什么？
-Safe-to-Use 报告不是相似度报告，而是一份 “图片可用性体检”，包含：
-	•	视觉稳定性分析
-	•	潜在混淆点提醒（非法律判定）
-	•	独特性 / 辨识度表现
-	•	可视化标注（重点亮点和注意点）
-	•	总体可用性等级
-报告的目的不是告诉你有没有撞图，而是告诉你这张图在实际使用中是否“稳健好用”。
+    .taskbar .start-btn {
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-5. LOONOOL 会保存我的图片吗？
-不会长期保存。  原图仅用于分析，最多保留 72 小时，之后自动删除。  开启“保存历史”时，保存的也只是报告和缩略图，不是原图。
+    .taskbar .open-windows {
+      display: flex;
+      gap: 10px;
+      margin-left: 20px;
+    }
 
-6. 图片可以商用吗？你们会给结论吗？
-我们提供的是 技术层面的可用性分析与提示，  最终能否商用，还需要结合你的使用场景、地区、文案和实际业务决定。
+    .taskbar .open-windows .window-btn {
+      cursor: pointer;
+      padding: 5px 10px;
+      background-color: #2980b9;
+      color: white;
+      border-radius: 5px;
+      font-size: 14px;
+    }
 
-7. 支持哪些类型的图片？
-	•	支持 JPG / PNG / WebP
-	•	适用于 Logo、图形主视觉、包装图、电商主图等
-	•	不支持文档、视频、人脸识别或违法违规图像
+    /* Window style */
+    .window {
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 80%;
+      height: 80%;
+      margin: 20px auto;
+      position: relative;
+      display: none;
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-8. 需要登录才能生成报告吗？
- 需要。
- 登录后可保存报告、同步历史记录、持续跟踪你的修改版本。
+    /* Title bar for window */
+    .window .title-bar {
+      background-color: #3498db;
+      color: white;
+      padding: 10px;
+      font-size: 18px;
+      text-align: center;
+      cursor: move;
+    }
 
-9. 一张图片可以生成几种报告？
-默认会生成 Safe-to-Use 报告。  你也可以选择查看：
-	•	原创度报告（Originality，逐步开放）
-	•	行业报告（如 Amazon / Food / Beauty 等，逐步开放）
+    /* Code Editor Area */
+    .window .code-editor {
+      padding: 20px;
+      height: calc(100% - 40px);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
-10. 报告可以分享和下载吗？
-可以。
- 支持：
-	•	PDF 下载
-	•	分享只读链接给团队、客户、供应商查看
+    /* Textarea for the code editor */
+    .window .code-editor textarea {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      background-color: #f5f5f5;
+      resize: none;
+    }
 
-11. 如果分析失败会怎么处理？
-系统会给出明确提示，你可以重新上传或稍后重试。
- 不会影响你的其他图片或报告。
+    /* Button to run the code */
+    .window .code-editor button {
+      padding: 10px;
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
 
-12. 之后会增加哪些功能？
-我们正在开发：
-	•	更多行业规范检测
-	•	更深入的原创度/差异度分析
-	•	团队协作和企业版
-	•	私有图库比对（企业专属）
+    /* Button hover effect */
+    .window .code-editor button:hover {
+      background-color: #1f78b9;
+    }
 
+    /* Output window for the code result */
+    .window .output {
+      padding: 15px;
+      background-color: #2c3e50;
+      color: white;
+      height: 200px;
+      border-radius: 8px;
+      overflow-y: auto;
+    }
+
+    .window .output iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="desktop">
+    <!-- Taskbar -->
+    <div class="taskbar">
+      <div class="start-btn" onclick="toggleStartMenu()">开始</div>
+      <div class="open-windows">
+        <div class="window-btn" onclick="openCodeEditor()">打开代码编辑器</div>
+      </div>
+    </div>
+
+    <!-- Code Editor Window -->
+    <div class="window" id="codeEditorWindow">
+      <div class="title-bar">代码编辑器</div>
+      <div class="code-editor">
+        <textarea id="htmlCode" placeholder="输入 HTML 代码"></textarea>
+        <textarea id="cssCode" placeholder="输入 CSS 代码"></textarea>
+        <textarea id="jsCode" placeholder="输入 JavaScript 代码"></textarea>
+        <button onclick="runCode()">运行代码</button>
+      </div>
+      <div class="output">
+        <iframe id="outputFrame"></iframe>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleStartMenu() {
+      alert("开始菜单按钮被点击！");
+    }
+
+    function openCodeEditor() {
+      const editorWindow = document.getElementById('codeEditorWindow');
+      editorWindow.style.display = 'block';
+    }
+
+    function runCode() {
+      const htmlCode = document.getElementById('htmlCode').value;
+      const cssCode = document.getElementById('cssCode').value;
+      const jsCode = document.getElementById('jsCode').value;
+
+      const outputFrame = document.getElementById('outputFrame');
+      const document = outputFrame.contentDocument || outputFrame.contentWindow.document;
+
+      document.open();
+      document.write(`
+        <html>
+          <head>
+            <style>${cssCode}</style>
+          </head>
+          <body>
+            ${htmlCode}
+            <script>${jsCode}</script>
+          </body>
+        </html>
+      `);
+      document.close();
+    }
+  </script>
+
+</body>
+</html>
